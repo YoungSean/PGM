@@ -8,6 +8,8 @@ class VE:
     def __init__(self, g, targets=None):
         self.g = g
         self.elimination_order = []#[rv for rv in g.rvs if rv not in targets]
+        self.width = 0
+        self.order = []
 
     def eliminate_rv(self, target_rv):
         # assume we eliminate R.V. A, its neighbours are [B,C,D]
@@ -70,7 +72,7 @@ class VE:
 
 
     def min_degree(self):
-        print("run min_degree")
+        # print("run min_degree")
         if len(self.g.rvs) == 0:
             print("No random variable exists.")
             return
@@ -78,15 +80,19 @@ class VE:
         minDegree = min([self.get_degree(rv) for rv in self.g.rvs])
         # get a rv whose degree == minDegree
         rv_elimated = random.choice([rv for rv in self.g.rvs if self.get_degree(rv) == minDegree])
-        print("Eliminating the random variable: ", rv_elimated.name)
+        # print("Eliminating the random variable: ", rv_elimated.name)
+        self.order.append(rv_elimated.name)
+        self.width = max(self.width, minDegree)
         # put one rv into elimination_order
         self.elimination_order.append(rv_elimated)
 
     def ve_min_degree(self):
-        print("run ve min degree")
+        print("running ve using min degree")
         while self.g.rvs:
             self.min_degree()
             self.run()
+
+        self.print_result()
 
     """Min Fill"""
     def get_edge_from_factor(self, factor):
@@ -100,10 +106,10 @@ class VE:
                 for j in range(i+1, N):
                     if rvs[i].name < rvs[j].name:
                         edges.append((rvs[i], rvs[j]))
-                        print((rvs[i].name, rvs[j].name))
+                        #print((rvs[i].name, rvs[j].name))
                     else:
                         edges.append((rvs[j], rvs[i]))
-                        print((rvs[j].name, rvs[i].name))
+                        #print((rvs[j].name, rvs[i].name))
 
         return edges
 
@@ -123,21 +129,31 @@ class VE:
         return num_fill
 
     def min_fill(self):
-        print("run min_fill")
+        # print("run min_fill")
         if len(self.g.rvs) == 0:
             print("No random variable exists.")
             return
         # find the minimum degree
         minFill = min([self.get_fill(rv) for rv in self.g.rvs])
-        print("Min Fill number: ", minFill)
+        # print("Min Fill number: ", minFill)
         # get a rv whose degree == minDegree
         rv_elimated = random.choice([rv for rv in self.g.rvs if self.get_fill(rv) == minFill])
-        print("Eliminating the random variable: ", rv_elimated.name)
+        # print("Eliminating the random variable: ", rv_elimated.name)
+        self.order.append(rv_elimated.name)
+        self.width = max(self.width, self.get_degree(rv_elimated))
         # put one rv into elimination_order
         self.elimination_order.append(rv_elimated)
 
     def ve_min_fill(self):
-        print("run ve min fill")
+        print("Running ve using min fill")
         while self.g.rvs:
             self.min_fill()
             self.run()
+
+    def print_result(self):
+        for f in self.g.fs:
+            Z = f.table
+        print("Width along the given order: ", self.width)
+        # print("Z: ", Z)
+        print("Exact log10(Z): ", np.log10(Z))
+        # print("Eliminating order: ", self.order)
