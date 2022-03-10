@@ -15,40 +15,30 @@ class Domain:
         )
 
 
-class Potential(ABC):
-    def __init__(self):
-        pass
-
-    @abstractmethod
-    def get(self, parameters):
-        pass
-
-
 class RV:
     def __init__(self, domain, value=None):
+        # e.g. binary vr, domain: (0, 1)
         self.domain = domain
+        # example value: A = 0
         self.value = value
-        self.nb = []
+        self.nb = list()
 
 
 class F:
-    def __init__(self, potential, nb=None):
-        self.potential = potential
-        if nb is None:
-            self.nb = []
-        else:
-            self.nb = nb
+    def __init__(self, table, nb):
+        self.table = table
+        self.nb = nb
 
 
 class Graph:
-    def __init__(self, rvs, factors):
+    def __init__(self, rvs, fs):
         self.rvs = rvs
-        self.factors = factors
+        self.fs = fs
         self.init_nb()
 
     def init_nb(self):
         for rv in self.rvs:
-            rv.nb = []
-        for f in self.factors:
+            rv.nb = list()
+        for f in self.fs:
             for rv in f.nb:
                 rv.nb.append(f)
