@@ -17,7 +17,7 @@ def load(f):
 
         rvs = dict()
         for i, d in enumerate(domains):
-            rvs[i] = RV(domain_dict[d])
+            rvs[i] = RV(domain_dict[d], name=i)
 
         num_factor = int(file.readline().strip())
 

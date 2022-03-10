@@ -17,9 +17,17 @@ g = Graph(
     fs={f for _, f in fs.items()}
 )
 
-infer = VE(g, targets={rvs[2]})
-infer.run()
-# infer.eliminate_rv(rvs[0])
+infer = VE(g, targets={})
+# infer.run()
+# infer.print_fs()
+# infer.ve_min_degree()
 # infer.print_fs()
 
-print(infer.prob(rvs[2]))
+infer.ve_min_fill()
+infer.print_fs()
+# infer.eliminate_rv(rvs[1])
+# infer.print_fs()
+# infer.eliminate_rv(rvs[2])
+# infer.print_fs()
+
+# print(infer.prob(rvs[2]))

@@ -16,17 +16,19 @@ class Domain:
 
 
 class RV:
-    def __init__(self, domain, value=None):
+    def __init__(self, domain, value=None, name=None):
         # e.g. binary vr, domain: (0, 1)
         self.domain = domain
         # example value: A = 0
         self.value = value
+        self.name = name
         self.nb = list()
 
 
 class F:
     def __init__(self, table, nb):
         self.table = table
+        # factor connects random variables
         self.nb = nb
 
 
