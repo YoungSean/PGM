@@ -87,7 +87,7 @@ class VE:
         self.elimination_order.append(rv_elimated)
 
     def ve_min_degree(self):
-        print("running ve using min degree")
+        #print("running variable elimination using min degree")
         while self.g.rvs:
             self.min_degree()
             self.run()
@@ -145,7 +145,7 @@ class VE:
         self.elimination_order.append(rv_elimated)
 
     def ve_min_fill(self):
-        print("Running ve using min fill")
+        # print("Running variable elimination using min fill")
         while self.g.rvs:
             self.min_fill()
             self.run()
