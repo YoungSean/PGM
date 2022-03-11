@@ -1,5 +1,3 @@
-from abc import ABC, abstractmethod
-
 
 class Domain:
     def __init__(self, values):
