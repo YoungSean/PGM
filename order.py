@@ -4,6 +4,7 @@ from VE import VE
 import sys
 import numpy as np
 import os
+import time
 
 
 def run_on_uai(filepath, order):
@@ -29,6 +30,7 @@ def main():
     ordering = sys.argv[2]
     k = int(sys.argv[3])
     output_filename = sys.argv[4]
+    start_time = time.time()
     treewidth = sys.maxsize
     width_results = []
     best_order = []
@@ -38,7 +40,8 @@ def main():
             treewidth = width
             best_order = ve_order
         width_results.append(width)
-
+    average_time = (time.time() - start_time) / k
+    average_time = str(round(average_time, 3))
     width_arr = np.array(width_results)
     mean_width = np.mean(width_arr)
     deviation_width = np.std(width_arr)
@@ -46,6 +49,7 @@ def main():
     print("Width of the best order on {} = {}".format(os.path.basename(filename), treewidth))
     print("Average and Standard over {} runs = ({:.1f}, {:.2f})".format(k, mean_width, deviation_width))
     print("Best order: ", best_order)
+    print("---Average time {} seconds ---".format(average_time))
     print("*************************************")
 
     with open(output_filename, 'w') as f:
