@@ -83,7 +83,7 @@ def demo_file(f, order, k):
     output_file = "result_of_"+file_basename+"_"+str(k)+"runs.txt"
     with open(output_file, "w") as f:
         result = "Best width: " + str(treewidth) + "\n" + "mean: "+str(mean_width)+"\n"+"std: " \
-                 +str(deviation_width) + "average time: " + str(round(average_time, 3))
+                 +str(deviation_width) +"\n" +"average time: " + str(round(average_time, 3))
         f.write(result)
 
 
@@ -125,9 +125,14 @@ if __name__ == '__main__':
     # demo_dir(os.path.join(".", "data"), "mindegree", 10)
     # demo_file(".\\data\\Grids_16.uai", "mindegree", 5)
     # demo_dir(os.path.join(".", "data"), "minfill", 10)
-    demo_file(".\\data\\ObjectDetection_14.uai", "minfill", 10)
-    demo_file(".\\data\\ObjectDetection_15.uai", "minfill", 10)
-    demo_file(".\\data\\ObjectDetection_16.uai", "minfill", 10)
+    # demo_file(".\\data\\ObjectDetection_14.uai", "minfill", 5)
+    # demo_file(".\\data\\ObjectDetection_15.uai", "minfill", 5)
+    demo_file(".\\data\\Segmentation_11.uai.uai", "minfill", 10)
+    demo_file(".\\data\\Segmentation_12.uai.uai", "minfill", 10)
+    demo_file(".\\data\\Segmentation_13.uai.uai", "minfill", 10)
+    demo_file(".\\data\\Segmentation_14.uai.uai", "minfill", 10)
+    demo_file(".\\data\\Segmentation_15.uai.uai", "minfill", 10)
+
     # demo_file(".\\data\\Grids_16.uai", "minfill", 10)
 
     # demo_file(os.path.join(".", "data", "ObjectDetection_11.uai"), "mindegree", 3)

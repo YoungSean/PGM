@@ -92,7 +92,7 @@ class VE:
             self.min_degree()
             self.run()
 
-        # self.print_result()
+        self.print_result()
 
     """Min Fill"""
     def get_edge_from_factor(self, factor):
@@ -149,6 +149,8 @@ class VE:
         while self.g.rvs:
             self.min_fill()
             self.run()
+
+        self.print_result()
 
     def print_result(self):
         for f in self.g.fs:
