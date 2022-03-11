@@ -4,6 +4,7 @@ from VE import VE
 import sys
 import numpy as np
 import os
+import time
 
 # rvs, fs = load('sample_markov.uai')
 # rvs, fs = load('.\\data\\Grids_11.uai')
@@ -40,14 +41,29 @@ def run_on_uai(filepath, order):
     return infer.width, infer.order
 
 
+def demo_dir(network_dir, order, k=100):
+    filenames = os.listdir(network_dir)
+    file_paths = [os.path.join(network_dir, f) for f in filenames]
 
-def main():
+    for f in file_paths:
+        demo_file(f, order, k)
+
+def demo_file(f, order, k):
+    output_filename = os.path.basename(f) + "." + order + "_order"+ "_" + str(k) + "_runs"
+    # print(output_filename)
+    start_time = time.time()
+    experiment(f, order, k, output_filename)
+    average_time = (time.time() - start_time) / k
+    print("---Average time %s seconds ---" % average_time)
+
+
+def experiment(f, order, kRuns, output_order):
 
     # run_on_uai('.\\data\\Grids_11.uai', 'mindegree')
-    filename = sys.argv[1]
-    ordering = sys.argv[2]
-    k = int(sys.argv[3])
-    output_filename = sys.argv[4]
+    filename = f #sys.argv[1]
+    ordering = order # sys.argv[2]
+    k = kRuns # int(sys.argv[3])
+    output_filename = output_order #sys.argv[4]
     treewidth = sys.maxsize
     width_results = []
     best_order = []
@@ -73,4 +89,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # demo_file("sample_markov.uai", "minfill", 3)
+    # demo_dir(os.path.join(".", "data"), "mindegree", 3)
+    # demo_file(os.path.join(".", "data", "ObjectDetection_11.uai"), "mindegree", 3)
+    demo_file(os.path.join(".", "data", "Segmentation_11.uai"), "minfill", 5)

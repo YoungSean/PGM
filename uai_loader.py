@@ -29,17 +29,19 @@ def load(f):
                 nb=[rvs[int(rv)] for rv in line[1:]]
             )
 
-        file.readline()
-
         for i in range(num_factor):
-            table = list()
-            file.readline()
             line = file.readline()
-            while line and line != '\n':
-                table.append(
-                    [float(val) for val in line.strip().split()]
-                )
+            while line and line.strip() == '':
                 line = file.readline()
+
+            size = int(line.strip())
+            table = list()
+
+            while len(table) < size:
+                line = file.readline()
+                line = line.strip().split()
+                table.extend([float(val) for val in line])
+
             fs[i].table = np.array(table).reshape([len(rv.domain.values) for rv in fs[i].nb])
 
     return rvs, fs
