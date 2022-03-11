@@ -5,7 +5,7 @@ import sys
 import numpy as np
 import os
 import time
-
+import pandas as pd
 # rvs, fs = load('sample_markov.uai')
 # rvs, fs = load('.\\data\\Grids_11.uai')
 
@@ -21,7 +21,11 @@ import time
 # infer.print_fs()
 # infer.ve_min_degree()
 # infer.print_fs()
-
+networks = []
+best_widths = []
+means = []
+stds = []
+average_time_per_order = []
 
 def run_on_uai(filepath, order):
     rvs, fs = load(filepath)
@@ -46,15 +50,41 @@ def demo_dir(network_dir, order, k=100):
     file_paths = [os.path.join(network_dir, f) for f in filenames]
 
     for f in file_paths:
+        if os.path.basename(f) =='Grids_16.uai':
+            continue
         demo_file(f, order, k)
 
+    result_dict = {"Network" : networks,
+                   "Best-width" : best_widths,
+                   "average-width" : means,
+                   "standard-deviation" : stds,
+                   "Average-time-per-order(s)": average_time_per_order}
+    df = pd.DataFrame(result_dict)
+    print(df)
+    store_result = "result"+"_"+order+"_"+str(k)+"_runs.txt"
+    with open(store_result, 'w') as f:
+        dfAsStr = df.to_string()
+        f.write(dfAsStr)
+
+
 def demo_file(f, order, k):
-    output_filename = os.path.basename(f) + "." + order + "_order"+ "_" + str(k) + "_runs"
+    file_basename = os.path.basename(f)
+    networks.append(file_basename)
+    output_filename = file_basename + "." + order + "_order"+ "_" + str(k) + "_runs"
     # print(output_filename)
     start_time = time.time()
-    experiment(f, order, k, output_filename)
+    treewidth, mean_width, deviation_width = experiment(f, order, k, output_filename)
+    best_widths.append(treewidth)
+    means.append(mean_width)
+    stds.append(deviation_width)
     average_time = (time.time() - start_time) / k
+    average_time_per_order.append(str(round(average_time, 3)))
     print("---Average time %s seconds ---" % average_time)
+    output_file = "result_of_"+file_basename+"_"+str(k)+"runs.txt"
+    with open(output_file, "w") as f:
+        result = "Best width: " + str(treewidth) + "\n" + "mean: "+str(mean_width)+"\n"+"std: " \
+                 +str(deviation_width) + "average time: " + str(round(average_time, 3))
+        f.write(result)
 
 
 def experiment(f, order, kRuns, output_order):
@@ -83,13 +113,22 @@ def experiment(f, order, kRuns, output_order):
     print("Best order: ", best_order)
     print("*************************************")
 
-    with open(output_filename, 'w') as f:
-        nums = [str(rv) for rv in best_order]
-        f.write(" ".join(nums))
+    # with open(output_filename, 'w') as f:
+    #     nums = [str(rv) for rv in best_order]
+    #     f.write(" ".join(nums))
+
+    return treewidth, mean_width, deviation_width
 
 
 if __name__ == '__main__':
     # demo_file("sample_markov.uai", "minfill", 3)
-    # demo_dir(os.path.join(".", "data"), "mindegree", 3)
+    # demo_dir(os.path.join(".", "data"), "mindegree", 10)
+    # demo_file(".\\data\\Grids_16.uai", "mindegree", 5)
+    # demo_dir(os.path.join(".", "data"), "minfill", 10)
+    demo_file(".\\data\\ObjectDetection_14.uai", "minfill", 10)
+    demo_file(".\\data\\ObjectDetection_15.uai", "minfill", 10)
+    demo_file(".\\data\\ObjectDetection_16.uai", "minfill", 10)
+    # demo_file(".\\data\\Grids_16.uai", "minfill", 10)
+
     # demo_file(os.path.join(".", "data", "ObjectDetection_11.uai"), "mindegree", 3)
-    demo_file(os.path.join(".", "data", "Segmentation_11.uai"), "minfill", 5)
+    # demo_file(os.path.join(".", "data", "Segmentation_11.uai"), "minfill", 5)
