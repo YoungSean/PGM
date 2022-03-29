@@ -1,4 +1,5 @@
 import random
+from collections import defaultdict
 
 import numpy as np
 from Graph import F
@@ -10,6 +11,9 @@ class VE:
         self.elimination_order = []#[rv for rv in g.rvs if rv not in targets]
         self.width = 0
         self.order = []
+        self.clusters = []
+        self.given_order = []
+        self.given_order_names = []
 
     def eliminate_rv(self, target_rv):
         # assume we eliminate R.V. A, its neighbours are [B,C,D]
@@ -17,6 +21,9 @@ class VE:
         fs = target_rv.nb
         #
         nb_rvs = set().union(*[set(f.nb) for f in target_rv.nb])
+        ## save cluster here
+        self.clusters.append(list([rv.name for rv in nb_rvs]))
+
         nb_rvs.remove(target_rv)
         # nb_rvs = [B,C,D]
         nb_rvs = list(nb_rvs)
@@ -51,7 +58,7 @@ class VE:
     def run(self):
         # given an order, we eliminate R.V.s
         while self.elimination_order:
-            rv = self.elimination_order.pop()
+            rv = self.elimination_order.pop(0)
             self.eliminate_rv(rv)
 
     def prob(self, rv):
@@ -159,3 +166,67 @@ class VE:
         # print("Z: ", Z)
         print("Exact log10(Z): ", np.log10(Z))
         # print("Eliminating order: ", self.order)
+
+    def set_order(self, order_file):
+        with open(order_file, 'r') as f:
+            orders = f.readline().split()
+            orders = [int(name) for name in orders]
+            self.given_order_names = orders
+            for vr_name in orders:
+                vr = self.g.rv_name_to_rv(vr_name)
+                self.given_order.append(vr)
+
+
+    def run_use_given_order(self):
+        # given an order, we eliminate R.V.s
+        while self.given_order:
+            rv = self.given_order.pop(0)
+            #print("we eliminate: ", rv.name)
+            self.eliminate_rv(rv)
+
+    def find_wCutset(self, w):
+        C = set()
+        max_size = self.find_max_size()
+        while(max_size > w+1):
+            X = self.find_X()
+            C = C.union({X})
+            self.remove_x(X)
+            max_size = self.find_max_size()
+        return C
+
+
+    def find_X(self):
+        X = -1
+        freq = defaultdict(int)
+        for cluster in self.clusters:
+            for v in cluster:
+                freq[v] += 1
+
+        max_freq = 0
+        possible_x = []
+        for key, value in freq.items():
+            if value > max_freq:
+                possible_x = []
+                max_freq = value
+                possible_x.append(key)
+            elif value == max_freq:
+                possible_x.append(key)
+        print(possible_x)
+        X = random.choice(possible_x)
+        return X
+
+
+    def remove_x(self, X):
+        for c in self.clusters:
+            if X in c:
+                c.remove(X)
+        print("updated cluster {} using {}".format(self.clusters, X))
+
+
+    def find_max_size(self):
+        size_clusters = [len(c) for c in self.clusters]
+        max_size = max(size_clusters)
+        return max_size
+
+
+

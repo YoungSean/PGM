@@ -42,3 +42,10 @@ class Graph:
         for f in self.fs:
             for rv in f.nb:
                 rv.nb.append(f)
+
+    def rv_name_to_rv(self, name):
+        for rv in self.rvs:
+            if rv.name == name:
+                return rv
+
+        print("No such variable")
