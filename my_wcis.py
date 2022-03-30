@@ -6,10 +6,10 @@ import numpy as np
 import os
 import time
 
-
-filepath = "sample_markov.uai"
-order_file = "sample_order"
-output_file = "sample_cutset"
+#
+# filepath = "sample_markov.uai"
+# order_file = "sample_order"
+# output_file = "sample_cutset"
 
 def run_on_uai_order(filepath, w, order_file, output_file):
     rvs, fs = load(filepath)
@@ -23,7 +23,7 @@ def run_on_uai_order(filepath, w, order_file, output_file):
     #print(infer.given_order_names)
     #print(infer.given_order)
     infer.run_use_given_order()
-    print(infer.clusters)
+    # print(infer.clusters)
     C = infer.find_wCutset(w)
     print("The wCutset is ", C)
     wcutset = sorted(list(C))
@@ -35,4 +35,14 @@ def run_on_uai_order(filepath, w, order_file, output_file):
 
 
 
-run_on_uai_order(filepath, 0, order_file, output_file)
+# run_on_uai_order(filepath, 0, order_file, output_file)
+
+def main():
+    filepath = sys.argv[1]
+    w = int(sys.argv[2])
+    order_file = sys.argv[3]
+    out_file = sys.argv[4]
+    run_on_uai_order(filepath, w, order_file, out_file)
+
+if __name__ == "__main__":
+    main()

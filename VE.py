@@ -211,7 +211,7 @@ class VE:
                 possible_x.append(key)
             elif value == max_freq:
                 possible_x.append(key)
-        print(possible_x)
+        # print(possible_x)
         X = random.choice(possible_x)
         return X
 
@@ -220,7 +220,7 @@ class VE:
         for c in self.clusters:
             if X in c:
                 c.remove(X)
-        print("updated cluster {} using {}".format(self.clusters, X))
+        # print("updated cluster {} using {}".format(self.clusters, X))
 
 
     def find_max_size(self):
